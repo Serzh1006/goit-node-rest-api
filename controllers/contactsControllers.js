@@ -3,6 +3,7 @@ import {
   getContactById,
   removeContact,
   addContact,
+  updateContactService,
 } from "../services/contactsServices.js";
 
 export const getAllContacts = async (req, res) => {
@@ -56,4 +57,16 @@ export const createContact = async (req, res) => {
   });
 };
 
-export const updateContact = (req, res) => {};
+export const updateContact = async (req, res) => {
+  const { id } = req.params;
+
+  const userObj = await getContactById(id);
+  Object.assign(userObj, req.body);
+
+  const updatedUser = await updateContactService(userObj);
+  res.status(200).json({
+    status: 200,
+    message: "User was update successfully",
+    data: updatedUser,
+  });
+};
