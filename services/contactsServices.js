@@ -45,11 +45,12 @@ export async function addContact(name, email, phone) {
   return newObj;
 }
 
-export async function updateContactService(body) {
-  await removeContact(body.id);
+export async function updateContactService(oldBody, newBody) {
+  await removeContact(oldBody.id);
+  Object.assign(oldBody, newBody);
   const list = await listContacts();
-  list.push(body);
+  list.push(oldBody);
   const json = JSON.stringify(list, null, 2);
   fs.writeFile(contactsPath, json, "utf-8");
-  return body;
+  return oldBody;
 }
