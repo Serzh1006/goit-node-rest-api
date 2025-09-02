@@ -7,7 +7,7 @@ import {
   updateContactService,
 } from "../services/contactsServices.js";
 
-export const getAllContacts = async (req, res, next) => {
+export const getAllContacts = async (_, res) => {
   try {
     const result = await listContacts();
     res.status(200).json({
@@ -16,11 +16,11 @@ export const getAllContacts = async (req, res, next) => {
       count: result.length,
     });
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-export const getOneContact = async (req, res, next) => {
+export const getOneContact = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await getContactById(id);
@@ -32,11 +32,11 @@ export const getOneContact = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-export const deleteContact = async (req, res, next) => {
+export const deleteContact = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedUser = await removeContact(id);
@@ -50,40 +50,51 @@ export const deleteContact = async (req, res, next) => {
       data: deletedUser,
     });
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-export const createContact = async (req, res, next) => {
+export const createContact = async (req, res) => {
   try {
-    const { name, email, phone } = req.body;
-    const newUser = await addContact(name, email, phone);
+    const newUser = await addContact(req.body);
     res.status(201).json({
       status: 201,
       message: "User was add successfully",
       data: newUser,
     });
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-export const updateContact = async (req, res, next) => {
+export const updateContact = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userObj = await getContactById(id);
-
-    if (userObj === null) {
+    const updatedUser = await updateContactService(req.params.id, req.body);
+    if (updatedUser === null) {
       throw new createError.NotFound("User not found");
     }
-
-    const updatedUser = await updateContactService(userObj, req.body);
     res.status(200).json({
       status: 200,
       message: "User was update successfully",
       data: updatedUser,
     });
   } catch (error) {
-    next(error);
+    throw error;
+  }
+};
+
+export const updateStatusContact = async (req, res) => {
+  try {
+    const updatedStatus = await updateContactService(req.params.id, req.body);
+    if (updatedStatus === null) {
+      throw new createError.NotFound("User not found");
+    }
+    res.status(200).json({
+      status: 200,
+      message: "Status was update successfully",
+      data: updatedStatus,
+    });
+  } catch (error) {
+    throw error;
   }
 };

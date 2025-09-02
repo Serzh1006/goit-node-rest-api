@@ -1,4 +1,5 @@
 import { isHttpError } from "http-errors";
+import { ValidationError } from "sequelize";
 
 export function errorHandler(err, _req, res, _next) {
   if (isHttpError(err)) {
@@ -7,5 +8,8 @@ export function errorHandler(err, _req, res, _next) {
       message: err.message,
     });
   }
-  res.status(500).json({ status: 500, message: "Server error" });
+  if (err instanceof ValidationError) {
+    err.status = 400;
+  }
+  res.status(err.status).json({ status: err.status, message: err.message });
 }
