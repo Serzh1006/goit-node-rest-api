@@ -5,11 +5,13 @@ import {
   deleteContact,
   createContact,
   updateContact,
+  updateStatusContact,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
+  updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
 const contactsRouter = express.Router();
@@ -26,6 +28,13 @@ contactsRouter.post(
   middlewareJson,
   validateBody(createContactSchema),
   createContact
+);
+
+contactsRouter.patch(
+  "/:id/favorite",
+  middlewareJson,
+  validateBody(updateFavoriteSchema),
+  updateStatusContact
 );
 
 contactsRouter.put(

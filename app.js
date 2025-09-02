@@ -1,6 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import "dotenv/config";
+import "./db/connect_db.js";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
@@ -17,6 +19,8 @@ app.use(notFoundHandler);
 
 app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
+const port = Number(process.env.port) || 3000;
+
+app.listen(port, () => {
+  console.log(`Server is running. Use our API on port: ${port}`);
 });
