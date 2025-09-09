@@ -5,6 +5,7 @@ import "dotenv/config";
 import "./db/connect_db.js";
 
 import contactsRouter from "./routes/contactsRouter.js";
+import authRouter from "./routes/authRouter.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
@@ -14,6 +15,7 @@ app.use(morgan("dev"));
 app.use(cors());
 
 app.use("/api/contacts", contactsRouter);
+app.use("/api/auth", authRouter);
 
 app.use(notFoundHandler);
 
