@@ -1,15 +1,19 @@
 import Contact from "../db/Contact.js";
 
-export async function listContacts() {
-  return Contact.findAll();
+export async function listContacts(owner) {
+  return Contact.findAll({
+    where: owner,
+  });
 }
 
-export async function getContactById(contactId) {
-  return Contact.findByPk(contactId);
+export async function getContactById(query) {
+  return Contact.findOne({
+    where: query,
+  });
 }
 
-export async function removeContact(contactId) {
-  const contact = await getContactById(contactId);
+export async function removeContact(query) {
+  const contact = await getContactById(query);
   if (!contact) {
     return null;
   }
@@ -17,12 +21,12 @@ export async function removeContact(contactId) {
   return contact;
 }
 
-export async function addContact(payload) {
-  return Contact.create(payload);
+export async function addContact(payload, owner) {
+  return Contact.create({ ...payload, owner });
 }
 
-export async function updateContactService(id, payload) {
-  const contact = await getContactById(id);
+export async function updateContactService(query, payload) {
+  const contact = await getContactById(query);
   if (!contact) {
     return null;
   }

@@ -7,9 +7,10 @@ import {
   updateContactService,
 } from "../services/contactsServices.js";
 
-export const getAllContacts = async (_, res) => {
+export const getAllContacts = async (req, res) => {
   try {
-    const result = await listContacts();
+    const { id: owner } = req.user;
+    const result = await listContacts({ owner });
     res.status(200).json({
       status: 200,
       data: result,
@@ -23,9 +24,10 @@ export const getAllContacts = async (_, res) => {
 export const getOneContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await getContactById(id);
+    const { id: owner } = req.user;
+    const result = await getContactById({ id, owner });
     if (result === null) {
-      throw new createError.NotFound("User not found");
+      throw new createError.NotFound("Contact not found");
     }
     res.status(200).json({
       status: 200,
@@ -39,10 +41,11 @@ export const getOneContact = async (req, res) => {
 export const deleteContact = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedUser = await removeContact(id);
+    const { id: owner } = req.user;
+    const deletedUser = await removeContact({ id, owner });
 
     if (deletedUser === null) {
-      throw new createError.NotFound("Not found");
+      throw new createError.NotFound("Contact not found");
     }
     res.status(200).json({
       status: 200,
@@ -56,10 +59,11 @@ export const deleteContact = async (req, res) => {
 
 export const createContact = async (req, res) => {
   try {
-    const newUser = await addContact(req.body);
+    const { id: owner } = req.user;
+    const newUser = await addContact(req.body, owner);
     res.status(201).json({
       status: 201,
-      message: "User was add successfully",
+      message: "Contact was add successfully",
       data: newUser,
     });
   } catch (error) {
@@ -69,13 +73,15 @@ export const createContact = async (req, res) => {
 
 export const updateContact = async (req, res) => {
   try {
-    const updatedUser = await updateContactService(req.params.id, req.body);
+    const { id: owner } = req.user;
+    const { id } = req.params;
+    const updatedUser = await updateContactService({ id, owner }, req.body);
     if (updatedUser === null) {
-      throw new createError.NotFound("User not found");
+      throw new createError.NotFound("Contact not found");
     }
     res.status(200).json({
       status: 200,
-      message: "User was update successfully",
+      message: "Contact was update successfully",
       data: updatedUser,
     });
   } catch (error) {
@@ -85,9 +91,11 @@ export const updateContact = async (req, res) => {
 
 export const updateStatusContact = async (req, res) => {
   try {
-    const updatedStatus = await updateContactService(req.params.id, req.body);
+    const { id: owner } = req.user;
+    const { id } = req.params;
+    const updatedStatus = await updateContactService({ id, owner }, req.body);
     if (updatedStatus === null) {
-      throw new createError.NotFound("User not found");
+      throw new createError.NotFound("Contact not found");
     }
     res.status(200).json({
       status: 200,
