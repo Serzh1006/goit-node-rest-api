@@ -30,7 +30,7 @@ export const currentController = async (req, res) => {
 
 export const logoutController = async (req, res) => {
   await logoutUser(req.user);
-  res.status(200).json({
+  res.status(204).json({
     message: "Logout is successfully!",
   });
 };
