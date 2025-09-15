@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import createError from "http-errors";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 import User from "../db/User.js";
 import "dotenv/config";
 
@@ -13,8 +14,13 @@ export const findUser = async (query) => {
 };
 
 export const registerUser = async (payload) => {
+  const url = gravatar.url(
+    payload.email,
+    { s: "100", r: "x", d: "retro" },
+    true
+  );
   const hashPassword = await bcrypt.hash(payload.password, 10);
-  return User.create({ ...payload, password: hashPassword });
+  return User.create({ ...payload, password: hashPassword, avatarURL: url });
 };
 
 export const loginUser = async (payload) => {
