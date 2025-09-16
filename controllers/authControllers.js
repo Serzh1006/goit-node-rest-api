@@ -2,6 +2,7 @@ import {
   registerUser,
   loginUser,
   logoutUser,
+  changeAvatarUser,
 } from "../services/authServices.js";
 
 export const registerController = async (req, res) => {
@@ -25,6 +26,13 @@ export const currentController = async (req, res) => {
   res.status(200).json({
     email,
     name,
+  });
+};
+
+export const changeAvatarController = async (req, res) => {
+  const poster = await changeAvatarUser(req.file, req.user);
+  res.status(200).json({
+    avatarURL: poster,
   });
 };
 
