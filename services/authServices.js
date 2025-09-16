@@ -2,10 +2,13 @@ import bcrypt from "bcrypt";
 import createError from "http-errors";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import fs from "fs/promises";
 import User from "../db/User.js";
 import "dotenv/config";
+import path from "path";
 
 const { SECRET_KEY } = process.env;
+const publicDir = path.resolve("public", "avatars");
 
 export const findUser = async (query) => {
   return User.findOne({
@@ -46,6 +49,14 @@ export const loginUser = async (payload) => {
     token: token,
     user: { email, subscription: user.subscription },
   };
+};
+
+export const changeAvatarUser = async (file, user) => {
+  const newPath = path.join(publicDir, file.filename);
+  await fs.rename(file.path, newPath);
+  const poster = path.join("avatars", file.filename);
+  await user.update({ avatarURL: poster });
+  return poster;
 };
 
 export const logoutUser = async (user) => {
