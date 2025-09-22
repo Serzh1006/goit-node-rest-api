@@ -1,12 +1,18 @@
 import express from "express";
 import validateBody from "../helpers/validateBody.js";
-import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
+import {
+  registerSchema,
+  loginSchema,
+  resendSchema,
+} from "../schemas/authSchemas.js";
 import {
   registerController,
   loginController,
   currentController,
   changeAvatarController,
   logoutController,
+  verifyController,
+  resendVerifyController,
 } from "../controllers/authControllers.js";
 import { authenticate } from "../middlewares/authenticate.js";
 import { upload } from "../middlewares/upload.js";
@@ -26,6 +32,14 @@ authRouter.post(
   middlewareJson,
   validateBody(loginSchema),
   loginController
+);
+
+authRouter.get("/verify/:verificationToken", verifyController);
+authRouter.post(
+  "/verify",
+  middlewareJson,
+  validateBody(resendSchema),
+  resendVerifyController
 );
 
 authRouter.patch(

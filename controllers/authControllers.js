@@ -3,13 +3,15 @@ import {
   loginUser,
   logoutUser,
   changeAvatarUser,
+  verifyUser,
+  resendVerifyEmail,
 } from "../services/authServices.js";
 
 export const registerController = async (req, res) => {
-  const { email, subscription } = await registerUser(req.body);
+  const { email, subscription, avatarURL } = await registerUser(req.body);
   res.status(201).json({
     status: 201,
-    data: { email: email, subscription: subscription },
+    data: { email: email, subscription: subscription, avatarURL: avatarURL },
   });
 };
 
@@ -21,11 +23,27 @@ export const loginController = async (req, res) => {
   });
 };
 
+export const verifyController = async (req, res) => {
+  const { verificationToken } = req.params;
+  await verifyUser(verificationToken);
+  res.json({
+    message: "Verification successful",
+  });
+};
+
+export const resendVerifyController = async (req, res) => {
+  await resendVerifyEmail(req.body);
+  res.json({
+    message: "Verify email resend successfully",
+  });
+};
+
 export const currentController = async (req, res) => {
-  const { email, name } = req.user;
+  const { email, name, avatarURL } = req.user;
   res.status(200).json({
     email,
     name,
+    avatarURL,
   });
 };
 
